@@ -3,10 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ManualPilot : MonoBehaviour
+public class Manualpilot : MonoBehaviour
 {
     public float moveVelocity = 0.1f;
-    public float maxRange = 5.0f;
+    public float maxRangeX = 2.5f;
+    public float maxRangeY = 4.5f;
+    public GameObject bullet;
+    public float fireInterval;
+
+    private float _nextFire;
     private Vector2 currentPosition;
     private Vector2 nextposition;
 
@@ -23,6 +28,16 @@ public class ManualPilot : MonoBehaviour
         currentPosition = new Vector2(transform.position.x, transform.position.y);
         nextposition = getNextPosition();
         transform.position = Vector2.MoveTowards(currentPosition, nextposition, moveVelocity);
+        getFireInput();
+    }
+
+    void getFireInput()
+    {
+        if (Input.GetKey(KeyCode.Space) && Time.time > _nextFire)
+        {
+            _nextFire = Time.time + fireInterval;
+            Instantiate(bullet, new Vector2(transform.position.x, transform.position.y + 1), Quaternion.identity);
+        }
     }
 
     Vector2 getNextPosition()
@@ -30,20 +45,20 @@ public class ManualPilot : MonoBehaviour
         Vector2 pos = new Vector2(transform.position.x, transform.position.y);
         if (Input.GetKey(KeyCode.UpArrow))
         {
-            pos = new Vector2(transform.position.x, 5);
+            pos = new Vector2(transform.position.x, maxRangeY);
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            pos = new Vector2(transform.position.x, -5);
+            pos = new Vector2(transform.position.x, -maxRangeY);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            pos = new Vector2(-5, transform.position.y);
+            pos = new Vector2(-maxRangeX, transform.position.y);
 
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            pos = new Vector2(5, transform.position.y);
+            pos = new Vector2(maxRangeX, transform.position.y);
         }
         return pos;
     }
